@@ -4,27 +4,28 @@ Configure Dockerfile and environment variables.
 
 ## Build Setup
 
-Using Docker
+This is a full stack application template. It contains a Node/Express server and a Nuxt/Vue frontend. Nuxt uses Server rendered pages (SSR) and we run it as a single page application (SPA). We found it a lot easier to develop the API using SPA mode.
 
-```
-docker build -t opex .
-docker run -it -p 5000:5000 opex
-docker container ls
-```
+After cloning the repo, create a .env file from the .env.TEMPLATE file.
+
+- Authentication and Updatables are private npm packages and require an NPM_TOKEN to access.
+- Database connections can be direct with GCP Cloud SQL with installed SSL certs. Those will need to be present and the production server's IP whitelisted.
+
+### Development
 
 ``` bash
-# install dependencies
-$ npm install
-
-# serve with hot reload at localhost:3000
-$ npm run dev
-
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+npm i
+npm run dev
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+### Production
+
+Using Docker
+
+```
+docker build -t opex_template .
+docker run -p 5000:5000 opex_template
+docker container ls
+```
