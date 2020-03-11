@@ -1,8 +1,16 @@
 # opex-template
 
-> My magnificent Nuxt.js project
+Configure Dockerfile and environment variables.
 
 ## Build Setup
+
+Using Docker
+
+```
+docker build -t opex .
+docker run -it -p 5000:5000 opex
+docker container ls
+```
 
 ``` bash
 # install dependencies

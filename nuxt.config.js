@@ -1,9 +1,10 @@
-
 module.exports = {
   mode: 'spa',
-  /*
-  ** Headers of the page
-  */
+  server: {
+    host: process.env.BASE_URL || '0.0.0.0',
+    port: process.env.PORT || 5000
+  },
+  serverMiddleware: [],
   head: {
     title: process.env.npm_package_name || '',
     meta: [
@@ -15,52 +16,55 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  /*
-  ** Customize the progress-bar color
-  */
-  loading: { color: '#fff' },
-  /*
-  ** Global CSS
-  */
+  loading: {
+    color: '#7898ad',
+    failedColor: '#ff0033',
+    continuous: true,
+    throttle: 300,
+    duration: 2000,
+    height: '4px'
+  },
+  loadingIndicator: {
+    name: 'three-bounce',
+    color: '#21222e',
+    background: '#f2f2f2'
+  },
   css: [
   ],
-  /*
-  ** Plugins to load before mounting the App
-  */
+  // TODO could this be set to a function that returns an array of paths to each file in the plugins directory?
   plugins: [
   ],
-  /*
-  ** Nuxt.js dev-modules
-  */
   buildModules: [
-    // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module'
   ],
-  /*
-  ** Nuxt.js modules
-  */
   modules: [
-    // Doc: https://bootstrap-vue.js.org
     'bootstrap-vue/nuxt',
-    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv'
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
+  bootstrapVue: {
+    bootstrapCSS: false,
+    bootstrapVueCSS: false,
+    config: {}
   },
-  /*
-  ** Build configuration
-  */
+  axios: {
+    browserBaseURL: `//${process.env.BROWSER_URL}`
+  },
+  googleAnalytics: {
+    id: process.env.GA_PROPERTY,
+    debug: {
+      enabled: false,
+      sendHitTask: true
+    }
+  },
   build: {
-    /*
-    ** You can extend webpack config here
-    */
     extend (config, ctx) {
+      // show correct line numbers in browser console
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient
+          ? 'source-map'
+          : 'inline-source-map'
+      }
     }
   }
 }
