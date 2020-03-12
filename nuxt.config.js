@@ -41,8 +41,7 @@ module.exports = {
   ],
   modules: [
     'bootstrap-vue/nuxt',
-    '@nuxtjs/axios',
-    '@nuxtjs/dotenv'
+    '@nuxtjs/axios'
   ],
   bootstrapVue: {
     bootstrapCSS: false,
