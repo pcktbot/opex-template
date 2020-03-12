@@ -24,8 +24,23 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 Using Docker
 
-```
+``` bash
 docker build -t opex_template .
 docker run -p 5000:5000 opex_template
 docker container ls
+```
+
+Using Kubernetes and Helm (via Homebrew)
+
+``` bash
+brew install helm
+helm install opex-template chart/nodeserver
+```
+
+Then source your server addresses and open the app in your default browser.
+
+``` bash
+export SAMPLE_NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services nodeserver-service)
+export SAMPLE_NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+open http://${SAMPLE_NODE_IP}:${SAMPLE_NODE_PORT}
 ```
