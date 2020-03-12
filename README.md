@@ -44,3 +44,16 @@ export SAMPLE_NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.po
 export SAMPLE_NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
 open http://${SAMPLE_NODE_IP}:${SAMPLE_NODE_PORT}
 ```
+#### Build new prod Image
+docker build -t [buildName] .
+docker tag [buildName] [repo]:[version]
+docker push [repo]:[version]
+
+
+DEPLOY
+update values.yaml version
+
+helm install [name] [chart]
+
+
+#### 

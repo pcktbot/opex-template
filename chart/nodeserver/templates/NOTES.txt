@@ -7,4 +7,4 @@ export SAMPLE_NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.ite
 
 And then open your web browser to http://${SAMPLE_NODE_IP}:${SAMPLE_NODE_PORT}" from the command line, eg:
 
-open http://${SAMPLE_NODE_IP}:${SAMPLE_NODE_PORT}
+open http://localhost:${SAMPLE_NODE_PORT}

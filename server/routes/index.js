@@ -7,6 +7,9 @@ healthcheck.registerReadinessCheck(pingcheck)
 module.exports = (app) => {
   app.use('/live', health.LivenessEndpoint(healthcheck))
   app.use('/ready', health.ReadinessEndpoint(healthcheck))
+  app.get('/api/testing', (req, res) => {
+    res.send(process.env.TEST_VAR)
+  })
   const routes = {}
   fs.readdirSync(__dirname)
     .filter(file => file.indexOf('.') !== 0 &&

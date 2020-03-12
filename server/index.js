@@ -1,4 +1,4 @@
-require('appmetrics-prometheus').attach()
+require('dotenv').config()
 const express = require('express')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
@@ -16,6 +16,9 @@ async function start () {
   if (config.dev) {
     const builder = new Builder(nuxt)
     await builder.build()
+  } else {
+    // require('appmetrics-zipkin')()
+    // require('appmetrics-prometheus').attach()
   }
 
   app.use(nuxt.render)

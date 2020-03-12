@@ -4,7 +4,7 @@ replicaCount: 3
 revisionHistoryLimit: 1
 image:
   repository: tylrhasg5/opextest
-  tag: 1.2.0
+  tag: 1.2.1
   pullPolicy: IfNotPresent
   resources:
     requests:
@@ -47,3 +47,4 @@ base:
 istio:
   enabled: false
   weight: 100
+
