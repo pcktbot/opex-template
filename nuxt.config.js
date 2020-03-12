@@ -29,7 +29,10 @@ module.exports = {
     color: '#21222e',
     background: '#f2f2f2'
   },
-  css: ['~/assets/theme.scss'],
+  css: [
+    '@/assets/theme.scss',
+    '@/assets/transitions.scss'
+  ],
   // TODO could this be set to a function that returns an array of paths to each file in the plugins directory?
   plugins: [
   ],
