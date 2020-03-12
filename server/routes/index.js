@@ -1,7 +1,12 @@
 const fs = require('fs')
 const path = require('path')
-
+const health = require('@cloudnative/health-connect')
+const healthcheck = new health.HealthChecker()
+const pingcheck = new health.PingCheck('google.com')
+healthcheck.registerReadinessCheck(pingcheck)
 module.exports = (app) => {
+  app.use('/live', health.LivenessEndpoint(healthcheck))
+  app.use('/ready', health.ReadinessEndpoint(healthcheck))
   const routes = {}
   fs.readdirSync(__dirname)
     .filter(file => file.indexOf('.') !== 0 &&
