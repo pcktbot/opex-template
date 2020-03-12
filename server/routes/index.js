@@ -3,7 +3,9 @@ const path = require('path')
 const health = require('@cloudnative/health-connect')
 const healthcheck = new health.HealthChecker()
 const pingcheck = new health.PingCheck('google.com')
+
 healthcheck.registerReadinessCheck(pingcheck)
+
 module.exports = (app) => {
   app.use('/live', health.LivenessEndpoint(healthcheck))
   app.use('/ready', health.ReadinessEndpoint(healthcheck))
