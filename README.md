@@ -49,11 +49,15 @@ docker build -t [buildName] .
 docker tag [buildName] [repo]:[version]
 docker push [repo]:[version]
 
+https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+####DEPLOY
 
-DEPLOY
-update values.yaml version
+export PROJECT_ID=[PROJECT_ID]
 
-helm install [name] [chart]
+docker build -t gcr.io/${PROJECT_ID}/[buildName]:[version] .
 
+gcloud auth configure-docker
 
-#### 
+docker push gcr.io/${PROJECT_ID}/[buildName]:[version]
+
+kubectl set image deployment/[name] [name]=gcr.io/${PROJECT_ID}/[buildName]:[version]

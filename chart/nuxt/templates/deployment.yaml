@@ -35,6 +35,7 @@ spec:
         env:
           - name: TEST_VAR
             value: "us-234-2"
+            
           - name: PORT
             value : "{{ .Values.service.servicePort }}"
         {{- if .Values.image.livenessProbe }}
