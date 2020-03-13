@@ -57,6 +57,8 @@ export PROJECT_ID=[PROJECT_ID]
 docker build -t gcr.io/${PROJECT_ID}/[buildName]:[version] .
 
 gcloud auth configure-docker
+gcloud config set project $PROJECT_ID
+gcloud config set compute/zone [COMPUTE_ENGINE_ZONE]
 
 docker push gcr.io/${PROJECT_ID}/[buildName]:[version]
 
