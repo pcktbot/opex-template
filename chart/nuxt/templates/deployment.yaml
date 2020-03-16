@@ -33,6 +33,9 @@ spec:
             cpu: "{{ .Values.image.resources.requests.cpu }}"
             memory: "{{ .Values.image.resources.requests.memory }}"
         env:
+          - name: TEST_VAR
+            value: "us-234-2"
+            
           - name: PORT
             value : "{{ .Values.service.servicePort }}"
         {{- if .Values.image.livenessProbe }}
