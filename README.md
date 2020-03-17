@@ -63,3 +63,49 @@ gcloud config set compute/zone [COMPUTE_ENGINE_ZONE]
 docker push gcr.io/${PROJECT_ID}/[buildName]:[version]
 
 kubectl set image deployment/[name] [name]=gcr.io/${PROJECT_ID}/[buildName]:[version]
+
+
+
+
+
+
+
+# Set Up Cluster
+## Set Env Vars
+export GCLOUD_PROJECT= Project ID from home in console
+export INSTANCE_REGION=us-central1
+export INSTANCE_ZONE=us-central1-a
+export PROJECT_NAME=helm
+export CLUSTER_NAME=${PROJECT_NAME}-cluster
+export CONTAINER_NAME=${PROJECT_NAME}-container
+
+
+## Setup
+gcloud config set project ${GCLOUD_PROJECT}
+gcloud config set compute/zone ${INSTANCE_ZONE}
+
+## Enable Services
+gcloud services enable compute.googleapis.com
+gcloud services enable container.googleapis.com
+
+
+## Create Cluster
+gcloud container clusters create ${CLUSTER_NAME} --num-nodes 2
+
+## Get Credentials 
+gcloud container clusters get-credentials ${CLUSTER_NAME} \
+    --zone ${INSTANCE_ZONE}
+
+## Confirm Connection 
+kubectl cluster-info
+
+
+## confirm the pod is running
+kubectl get pods
+
+## enable services
+
+gcloud services enable cloudbuild.googleapis.com
+
+## Build Container
+gcloud builds submit -t gcr.io/${GCLOUD_PROJECT}/${CONTAINER_NAME} ../
