@@ -1,9 +1,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 3
+replicaCount: 1
 revisionHistoryLimit: 1
 image:
-  repository: tylrhasg5/nuxt
+  repository: tylrhas/opex-template
   tag: 1.0.0
   pullPolicy: IfNotPresent
   resources:
@@ -11,23 +11,23 @@ image:
       cpu: 200m
       memory: 300Mi
   readinessProbe: {}
-  readinessProbe:
-    httpGet:
-      path: /ready
-      port: 3000
-    initialDelaySeconds: 3
-    periodSeconds: 5
+  # readinessProbe:
+  #   httpGet:
+  #     path: /ready
+  #     port: 8080
+  #   initialDelaySeconds: 3
+  #   periodSeconds: 5
   livenessProbe: {}
-  livenessProbe:
-    httpGet:
-      path: /live
-      port: 3000
-    initialDelaySeconds: 40
-    periodSeconds: 10
+  # livenessProbe:
+  #   httpGet:
+  #     path: /live
+  #     port: 8080
+  #   initialDelaySeconds: 40
+  #   periodSeconds: 10
 service:
   name: Node
   type: NodePort
-  servicePort: 3000
+  servicePort: 8080
 hpa:
   enabled: false
   minReplicas: 1
