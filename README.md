@@ -44,14 +44,20 @@ export SAMPLE_NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.po
 export SAMPLE_NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
 open http://${SAMPLE_NODE_IP}:${SAMPLE_NODE_PORT}
 ```
-#### Build new prod Image
+
+### Build new prod Image
+
+``` bash
 docker build -t [buildName] .
 docker tag [buildName] [repo]:[version]
 docker push [repo]:[version]
+```
 
-https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
-####DEPLOY
+See [Kubernetes Tutorial](https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app)
 
+### Deploy with gCloud
+
+``` bash
 export PROJECT_ID=[PROJECT_ID]
 
 docker build -t gcr.io/${PROJECT_ID}/[buildName]:[version] .
