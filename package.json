@@ -1,8 +1,8 @@
 {
   "name": "opex-template",
   "version": "1.0.0",
-  "description": "My magnificent Nuxt.js project",
-  "author": "David Miller",
+  "description": "A full stack app template for the G5 OpEx team.",
+  "author": "David Miller & Tyler Hasenoehrl",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
