@@ -9,7 +9,7 @@ module.exports = (app) => {
                     file !== 'README.md')
     .forEach((file) => {
       const routeName = file.replace('.js', '')
-      require(path.join(__dirname, file))(app, signale)
+      require(path.join(__dirname, file))(app)
       routes[routeName] = routes
     })
   return Object.assign(routes)

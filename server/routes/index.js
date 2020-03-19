@@ -7,10 +7,13 @@ const pingcheck = new health.PingCheck('google.com')
 healthcheck.registerReadinessCheck(pingcheck)
 
 module.exports = (app) => {
-  app.use('/live', health.LivenessEndpoint(healthcheck))
-  app.use('/ready', health.ReadinessEndpoint(healthcheck))
+  // app.use('/live', health.LivenessEndpoint(healthcheck))
+  // app.use('/ready', health.ReadinessEndpoint(healthcheck))
   app.get('/api/testing', (req, res) => {
-    res.send(process.env.TEST_VAR)
+    res.json({
+      TEST_VAR: process.env.TEST_VAR,
+      DATABASE_URL: process.env.DATABASE_URL
+    })
   })
   const routes = {}
   fs.readdirSync(__dirname)

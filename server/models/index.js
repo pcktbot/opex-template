@@ -33,11 +33,7 @@ const sequelize = new Sequelize(dbUrl, {
     evict: evictTest
   },
   dialectOptions: {
-    ssl: (ssl === 'true') ? {
-      ca: fs.readFileSync(path.join(__dirname, ca)),
-      cert: fs.readFileSync(path.join(__dirname, cert)),
-      key: fs.readFileSync(path.join(__dirname, key))
-    } : false
+    ssl: (ssl === 'true') ? { ca, cert, key } : false
   },
   logging: (logging === 'true')
 })
@@ -48,16 +44,17 @@ const db = {
   ...includeUpdatables ? require('@getg5/g5-updatable').models(sequelize) : {}
 }
 
-db.user.associate = (models) => {
-  models.user.hasMany(models.seoAssignment, { foreignKey: 'userId', sourceKey: 'id' })
-}
+// db.user.associate = (models) => {
+//   models.user.hasMany(models.seoAssignment, { foreignKey: 'userId', sourceKey: 'id' })
+// }
 
 fs.readdirSync(__dirname)
   .filter(file => file.indexOf('.') !== 0 &&
                   file !== 'index.js' &&
                   file !== 'sync.js' &&
                   file !== 'prototypes' &&
-                  file !== 'hooks'
+                  file !== 'hooks' &&
+                  file !== 'README.md'
   )
   .forEach((file) => {
     const model = sequelize.import(path.join(__dirname, file))
