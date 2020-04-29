@@ -33,21 +33,8 @@ Using Kubernetes and Helm (via Homebrew)
 brew install helm
 ```
 
-# Set Up a new kubernetes cluster
-
-## Set up project Id
-``` bash 
-export PROJECT_ID=[PROJECT_ID]
-```
-
-## Create a Cluster
-``` bash
-gcloud config set project $PROJECT_ID
-gcloud config set compute/zone [COMPUTE_ENGINE_ZONE]
-gcloud container clusters create [CLUSTER NAME] --num-nodes=[NUMBER_OF_NODES]
-```
-
 # Deploying the app
+This assumes that you are connected to the correct kubernetes cluster
 
 ## Build, Tag, Push the Docker Image 
 
@@ -59,17 +46,11 @@ docker push [repo]:[version]
 
 ## Deploy the app 
 Make sure that the repository and tag match the docker image before running this
-If this is the first deploy run the below
 ``` bash 
-helm install [NAME] [CHART]
-```
-If this is not the fist deploy run this 
-``` bash 
-helm upgrade [NAME] [CHART]
+helm install [NAME] [CHARTPATH]
 ```
 
-## Expose app to internet
-If this is the first deploy you will need to expose the port to the internet with the following 
-```bash 
-kubectl expose deployment [NAME] --type=LoadBalancer --port [PORT] --target-port [TARGET_PORT]
+## Update the app
+``` bash 
+helm upgrade [NAME] [CHARTPATH]
 ```
