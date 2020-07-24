@@ -1,6 +1,8 @@
 require('dotenv').config()
 const models = require('../../../server/models')
-describe('Models', () => {
+const hooks = require('../../../server/models/hooks')
+
+describe('Models Index', () => {
   test('Sequelize Class Exists', () => {
     expect(models).toHaveProperty('Sequelize')
   })
