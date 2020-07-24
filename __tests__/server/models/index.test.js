@@ -1,7 +1,6 @@
 require('dotenv').config()
 const models = require('../../../server/models')
-const hooks = require('../../../server/models/hooks')
-describe('Models Index', () => {
+describe('Models', () => {
   test('Sequelize Class Exists', () => {
     expect(models).toHaveProperty('Sequelize')
   })
@@ -10,5 +9,8 @@ describe('Models Index', () => {
   })
   test('Feedback Model Exists', () => {
     expect(models).toHaveProperty('feedback')
+  })
+  test('Model Hooks Added', () => {
+    expect(models.feedback.options.hooks).toHaveProperty('afterCreate')
   })
 })
