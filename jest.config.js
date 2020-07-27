@@ -16,7 +16,11 @@ module.exports = {
   },
   collectCoverage: true,
   collectCoverageFrom: [
-    '<rootDir>/server/models/**/*.js',
+    '!<rootDir>/server/index.js',
+    '!<rootDir>/server/routes/**',
+    '!<rootDir>/server/models/**',
+    '<rootDir>/server/**/*.js',
+    '<rootDir>/server/models/index.js',
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue'
   ],
