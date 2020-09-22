@@ -1,7 +1,8 @@
 module.exports = {
+  telemetry: false,
   mode: 'spa',
   server: {
-    host: process.env.BASE_URL || '0.0.0.0',
+    host: process.env.HOST || '0.0.0.0',
     port: process.env.PORT || 5000
   },
   serverMiddleware: [],
@@ -33,9 +34,7 @@ module.exports = {
     '@/assets/theme.scss',
     '@/assets/transitions.scss'
   ],
-  // TODO could this be set to a function that returns an array of paths to each file in the plugins directory?
-  plugins: [
-  ],
+  plugins: [],
   buildModules: [
     '@nuxtjs/eslint-module'
   ],
@@ -45,7 +44,8 @@ module.exports = {
   ],
   bootstrapVue: {
     bootstrapCSS: false,
-    bootstrapVueCSS: false
+    bootstrapVueCSS: false,
+    icons: true
   },
   axios: {
     browserBaseURL: `//${process.env.BROWSER_URL}`

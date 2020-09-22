@@ -1,4 +1,7 @@
-FROM node:latest
+FROM node:12
+
+# ARG NPM_TOKEN
+# ENV BROWSER_URL=
 
 RUN mkdir -p /usr/src/opex
 WORKDIR /usr/src/opex
