@@ -6,6 +6,7 @@ const app = express()
 const models = require('./models')
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
+require('./controllers/queue')
 require('./routes')(app)
 async function start () {
   const nuxt = new Nuxt(config)
