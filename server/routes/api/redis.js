@@ -1,52 +1,39 @@
 const queues = require('../../controllers/queue')
-
+const redis = require('../../controllers/redis')
 module.exports = (app) => {
   // Get all Jobs from the queue
   app.get('/api/v1/redis/:queueName/jobs', async (req, res) => {
     const { queueName } = req.params
-    const queue = queues[queueName]
-    const jobs = await queue.getJobs()
-    const jobsAndState = []
-    for (let i = 0; i < jobs.length; i++) {
-      const job = jobs[i]
-      const state = await job.getState()
-      jobsAndState.push({ job, state })
-    }
-    res.json(jobsAndState)
+    const jobs = await redis.getAllJobsInQueue(queueName)
+    res.json(jobs)
   })
 
   // Get job info by Id
   app.get('/api/v1/redis/:queueName/jobs/:id', async (req, res) => {
     const { id, queueName } = req.params
-    const queue = queues[queueName]
-    const job = await queue.getJob(id)
-    const state = await job.getState()
-    res.json({ job, state })
+    const job = await redis.getJobById(queueName, id)
+    res.json(job)
   })
 
   // End Non Standard Routs
 
   // Begin Standard names
-
   // Get all queue names
   app.get('/api/v1/redis', (req, res) => {
-    const queueNames = Object.keys(queues)
-      .map(qName => ({ name: qName }))
-    res.json(queueNames)
+    res.json(redis.getQueueNames())
   })
 
   // Get status job counts
   app.get('/api/v1/redis/:queueName', async (req, res) => {
     const { queueName } = req.params
-    const jobCounts = await queues[queueName].getJobCounts()
+    const jobCounts = await redis.getJobCounts(queueName)
     res.json(jobCounts)
   })
 
   // Get all jobs with a certian status
   app.get('/api/v1/redis/:queueName/:status', async (req, res) => {
     const { queueName, status } = req.params
-    const queue = queues[queueName]
-    const jobs = await queue.getJobs([status])
+    const jobs = await redis.getJobsByStatus(queueName, status)
     res.json(jobs)
   })
 
