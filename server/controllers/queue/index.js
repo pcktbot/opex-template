@@ -2,7 +2,7 @@ const { REDIS_URL } = process.env
 const path = require('path')
 const fs = require('fs')
 const Bull = require('bull')
-const queues = []
+
 if (!REDIS_URL) {
   throw new Error('No Redis url set')
 }
@@ -13,7 +13,3 @@ fs.readdirSync(__dirname)
     const fileName = file.replace('.js', '')
     module.exports[fileName] = queue(Bull, REDIS_URL)
   })
-
-module.exports = {
-  ...queues
-}

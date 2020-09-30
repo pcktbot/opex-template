@@ -31,7 +31,6 @@ module.exports = (app) => {
   // Get all queue names
   app.get('/api/v1/redis', (req, res) => {
     const queueNames = Object.keys(queues)
-      .filter(qName => qName !== 'init')
       .map(qName => ({ name: qName }))
     res.json(queueNames)
   })
