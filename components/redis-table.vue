@@ -3,7 +3,7 @@
     header-class="d-flex align-items-center justify-content-between"
   >
     <template v-slot:header>
-      <b-col cols="4">
+      <b-col cols="3">
         <b-form-group
           label="Filter"
           label-size="sm"
@@ -25,7 +25,7 @@
           </b-input-group>
         </b-form-group>
       </b-col>
-      <b-col cols="4">
+      <b-col cols="2">
         <b-form-group
           label="Per page"
           label-size="sm"
@@ -58,20 +58,41 @@
           />
         </b-form-group>
       </b-col>
+      <b-col cols="3" class="mt-4 pt-3">
+        <b-button size="sm" @click="selectAllRows">Select all</b-button>
+        <b-button size="sm" @click="clearSelected">Clear selected</b-button>
+      </b-col>
     </template>
     <b-table
+      ref="queueTbl"
       :items="items"
+      :fields="fields"
       :filter="filter"
       :per-page="perPage"
       :current-page="currentPage"
-      @filtered="onFiltered"
+      :select-mode="selectMode"
+      selectable
       responsive
-    />
+      @filtered="onFiltered"
+      @row-selected="onRowSelected"
+      head-variant="light"
+    >
+      <template v-slot:cell(selected)="{ rowSelected }">
+        <icons-swap
+          :needsCheckIcon="rowSelected"
+          :iconConfig="iconConfig"
+        />
+      </template>
+    </b-table>
   </b-card>
 </template>
 
 <script>
+import IconsSwap from '~/components/icons-swap'
 export default {
+  components: {
+    IconsSwap
+  },
   props: {
     items: {
       type: Array,
@@ -86,11 +107,17 @@ export default {
       perPage: 10,
       pageOptions: [5, 10, 20, 50],
       currentPage: 1,
-      totalRows: 1
+      totalRows: 1,
+      fields: ['selected', 'id', 'state', 'name', 'attemptsMade', '_progress', 'processedOn', 'finishedOn'],
+      selectMode: 'multi',
+      selected: [],
+      iconConfig: {
+        width: '25',
+        height: '25',
+        true: '/check-box.svg',
+        false: '/square.svg'
+      }
     }
-  },
-  mounted() {
-    this.totalRows = this.items.length
   },
   watch: {
     items: {
@@ -99,10 +126,22 @@ export default {
       }
     }
   },
+  mounted() {
+    this.totalRows = this.items.length
+  },
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    onRowSelected(items) {
+      this.selected = items
+    },
+    selectAllRows() {
+      this.$refs.queueTbl.selectAllRows()
+    },
+    clearSelected() {
+      this.$refs.queueTbl.clearSelected()
     }
   }
 }
