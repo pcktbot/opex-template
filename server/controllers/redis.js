@@ -4,7 +4,24 @@ module.exports = {
   getJobCounts,
   getJobsByStatus,
   getJobById,
+  getJobsById,
+  retryJobs,
   getAllJobsInQueue
+}
+
+async function getJobsById(queueName, ids) {
+  const jobs = []
+  for (let i = 0; i < ids.length; i++) {
+    const job = await getJobById(queueName, ids[i])
+    jobs.push(job)
+  }
+  return jobs
+}
+
+async function retryJobs(jobs) {
+  for (let i = 0; i < jobs.length; i++) {
+    await jobs[i].retry()
+  }
 }
 
 function getQueueNames() {
@@ -22,7 +39,7 @@ async function getJobById(queueName, id) {
   const queue = queues[queueName]
   const job = await queue.getJob(id)
   job.state = await job.getState()
-  return jobClassToObject(job)
+  return job
 }
 
 async function getAllJobsInQueue(queueName) {

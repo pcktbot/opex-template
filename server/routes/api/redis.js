@@ -12,7 +12,16 @@ module.exports = (app) => {
   app.get('/api/v1/redis/:queueName/jobs/:id', async (req, res) => {
     const { id, queueName } = req.params
     const job = await redis.getJobById(queueName, id)
-    res.json(job)
+    res.json(redis.jobClassToObject(job))
+  })
+
+  //Retry all jobs in queue
+  app.put('/api/v1/redis/:queueName/retry', async (req, res) => {
+    const { queueName } = req.params
+    const { ids } = req.body
+    const jobs = await redis.getJobsById(queueName, ids)
+    await redis.retryJobs(jobs)
+    res.sendStatus(200)
   })
 
   // End Non Standard Routs
