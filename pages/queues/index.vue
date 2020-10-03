@@ -11,7 +11,7 @@
           no-body
         >
           <template v-slot:header>
-            <h2 class="text-uppercase mb-0">
+            <h2 class="d-flex text-uppercase mb-0">
               {{ queue.name }}
             </h2>
             <b-btn-group size="sm">
@@ -35,7 +35,7 @@
               :key="key"
               button
               class="d-flex justify-content-between align-items-center"
-              @click="getJobsByStatus(queue.name, key)"
+              @click="getJobsByState(queue.name, key)"
             >
               {{ key }}
               <b-badge
@@ -52,7 +52,7 @@
     </b-row>
     <b-row>
       <b-col>
-        <redis-table :items="jobs" />
+        <redis-table />
       </b-col>
     </b-row>
   </b-container>
@@ -64,20 +64,15 @@ import RedisTable from '~/components/redis-table'
 export default {
   components: { RedisTable },
   mixins: [RedisMixin],
-  async asyncData({ $axios }) {
-    const queues = {}
-    const res = await $axios.$get('api/v1/redis')
-    for (let i = 0; i < res.length; i++) {
-      queues[res[i]] = {
-        name: res[i].name,
-        isPaused: false,
-        statuses: await $axios.$get(`api/v1/redis/${res[i].name}`)
-      }
+  async fetch({ store }) {
+    try {
+      await store.dispatch('queue/GET')
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
     }
-    return {
-      queues
-    }
-  }
+  },
+  computed: {}
 }
 </script>
 

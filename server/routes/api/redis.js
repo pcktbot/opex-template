@@ -1,6 +1,15 @@
 const queues = require('../../controllers/queue')
 const redis = require('../../controllers/redis')
 module.exports = (app) => {
+  //Retry all jobs in queue
+  app.put('/api/v1/redis/:queueName/retry', async (req, res) => {
+    const { queueName } = req.params
+    const { ids } = req.body
+    const jobs = await redis.getJobsById(queueName, ids)
+    await redis.retryJobs(jobs)
+    res.sendStatus(200)
+  })
+
   // Get all Jobs from the queue
   app.get('/api/v1/redis/:queueName/jobs', async (req, res) => {
     const { queueName } = req.params
@@ -13,15 +22,6 @@ module.exports = (app) => {
     const { id, queueName } = req.params
     const job = await redis.getJobById(queueName, id)
     res.json(redis.jobClassToObject(job))
-  })
-
-  //Retry all jobs in queue
-  app.put('/api/v1/redis/:queueName/retry', async (req, res) => {
-    const { queueName } = req.params
-    const { ids } = req.body
-    const jobs = await redis.getJobsById(queueName, ids)
-    await redis.retryJobs(jobs)
-    res.sendStatus(200)
   })
 
   // End Non Standard Routs
@@ -39,10 +39,14 @@ module.exports = (app) => {
     res.json(jobCounts)
   })
 
-  // Get all jobs with a certian status
-  app.get('/api/v1/redis/:queueName/:status', async (req, res) => {
-    const { queueName, status } = req.params
-    const jobs = await redis.getJobsByStatus(queueName, status)
+  // Get all jobs with a certian state
+  app.get('/api/v1/redis/:queueName/:state', async (req, res) => {
+    const { queueName, state } = req.params
+    const jobs = await redis.getJobsByState(queueName, state)
+      .then(jobs => jobs.map((job) => {
+        job.state = state
+        return redis.jobClassToObject(job)
+      }))
     res.json(jobs)
   })
 

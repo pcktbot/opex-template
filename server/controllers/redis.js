@@ -2,11 +2,12 @@ const queues = require('./queue')
 module.exports = {
   getQueueNames,
   getJobCounts,
-  getJobsByStatus,
+  getJobsByState,
   getJobById,
   getJobsById,
   retryJobs,
-  getAllJobsInQueue
+  getAllJobsInQueue,
+  jobClassToObject
 }
 
 async function getJobsById(queueName, ids) {
@@ -32,7 +33,7 @@ function getJobCounts (queueName) {
   return queues[queueName].getJobCounts()
 }
 
-function getJobsByStatus(queueName, status) {
+function getJobsByState(queueName, status) {
   return queues[queueName].getJobs([status])
 }
 async function getJobById(queueName, id) {
