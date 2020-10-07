@@ -4,6 +4,7 @@ $theme-colors: (
   'secondary': #7898ad,
   'tertiary': #e8513e,
   'quaternary': #eee23e,
+  'success': #339698
 );
 
 $enable-rounded: true;
@@ -12,7 +13,7 @@ $enable-gradients: false;
 $enable-transitions: true;
 $enable-print-styles: true;
 $bv-enable-table-stacked: true;
-$body-bg: RGBA(242, 242, 242, 1.00);
+// $body-bg: RGBA(242, 242, 242, 1.00);
 
 // BOOTSTRAP VARIABLES DECLARED ABOVE
 @import 'bootstrap/scss/bootstrap.scss';
