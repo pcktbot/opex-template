@@ -61,29 +61,29 @@
               <b-button @click="clearSelected">
                 Clear Selected
               </b-button>
+              <span :id="!failedSelected ? 'failed-state' : 'retry-btn'">
+                <b-button
+                  :disabled="!failedSelected"
+                  size="sm"
+                  @click="retryFailed(queueData.queueName, queueData.selected)"
+                >
+                  Retry Selected Failed Jobs
+                </b-button>
+                <b-popover
+                  target="failed-state"
+                  triggers="hover"
+                  placement="top"
+                >
+                  Select failed jobs
+                  <br>
+                  <span class="font-weight-bold">
+                    Or
+                  </span>
+                  <br>
+                  Unselect jobs that are not failed.
+                </b-popover>
+              </span>
             </b-btn-group>
-            <span :id="!failedSelected ? 'failed-state' : 'retry-btn'">
-              <b-button
-                :disabled="!failedSelected"
-                size="sm"
-                @click="retryFailed(queueData.queueName, queueData.selected)"
-              >
-                Retry Selected Failed Jobs
-              </b-button>
-              <b-popover
-                target="failed-state"
-                triggers="hover"
-                placement="top"
-              >
-                Select failed jobs
-                <br>
-                <span class="font-weight-bold">
-                  Or
-                </span>
-                <br>
-                Unselect jobs that are not failed.
-              </b-popover>
-            </span>
           </b-col>
         </b-row>
       </b-container>
