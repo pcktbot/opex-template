@@ -1,39 +1,42 @@
+import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      // jobs: [],
-      // job: null
-    }
-  },
-  computed: {
-    jobs: {
-      get() { return this.$store.state.queue.jobs },
-      set(val) {
-        val.forEach(row => (row._showDetails = false))
-        this.$store.commit('queue/SET', { jobs: val })
-      }
-    },
-    job: {
-      get() { return this.$store.state.queue.job },
-      set(val) { this.$store.commit('queue/SET', { job: val }) }
-    },
-    queues: {
-      get() { return this.$store.state.queue.queues },
-      set(val) { this.$store.commit('queue/SET', { queues: val }) }
-    }
-  },
+  computed: mapState({
+    jobs: state => state.queue.jobs,
+    job: state => state.queue.job,
+    queues: state => state.queue.queue
+  }),
+  // computed: {
+  //   jobs: {
+  //     get() { return this.$store.state.queue.jobs },
+  //     set(val) {
+  //       val.forEach(row => (row._showDetails = false))
+  //       this.$store.dispatch('queue/set', { jobs: val })
+  //     }
+  //   },
+  //   job: {
+  //     get() { return this.$store.state.queue.job },
+  //     set(val) { this.$store.dispatch('queue/set', { job: val }) }
+  //   },
+  //   queues: {
+  //     get() { return this.$store.state.queue.queues },
+  //     set(val) { this.$store.dispatch('queue/set', { queues: val }) }
+  //   }
+  // },
   methods: {
     async getAllJobs(queueName) {
-      this.jobs = await this.$axios.$get(`api/v1/redis/${queueName}/jobs`)
-      this.$store.commit('queue/SET', { queueName })
+      const jobs = await this.$axios.$get(`api/v1/redis/${queueName}/jobs`)
+      await this.$store.dispatch('queue/set', { jobs })
+      this.$store.dispatch('queue/set', { queueName })
     },
     async getJobById(queueName, id) {
-      this.job = await this.$axios.$get(`api/v1/redis/${queueName}/jobs/${id}`)
-      this.$store.commit('queue/SET', { queueName })
+      const jobs = await this.$axios.$get(`api/v1/redis/${queueName}/jobs/${id}`)
+      await this.$store.dispatch('queue/set', { jobs })
+      this.$store.dispatch('queue/set', { queueName })
     },
     async getJobsByState(queueName, status) {
-      this.jobs = await this.$axios.$get(`api/v1/redis/${queueName}/${status}`)
-      this.$store.commit('queue/SET', { queueName })
+      const jobs = await this.$axios.$get(`api/v1/redis/${queueName}/${status}`)
+      await this.$store.dispatch('queue/set', { jobs })
+      this.$store.dispatch('queue/set', { queueName })
     },
     addJobs(queueName) {
       this.$axios.$post(`api/v1/redis/${queueName}/jobs`, {})

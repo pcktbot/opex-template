@@ -7,7 +7,7 @@
         cols="4"
       >
         <b-card
-          header-class="d-flex justify-content-between align-items-center py-0"
+          header-class="d-flex justify-content-between align-items-center py-0 flex-wrap"
           no-body
         >
           <template v-slot:header>
@@ -50,7 +50,7 @@
         </b-card>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row no-gutters>
       <b-col>
         <redis-table />
       </b-col>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import RedisMixin from '~/mixins/redis'
 import RedisTable from '~/components/redis-table'
 export default {
@@ -66,13 +67,15 @@ export default {
   mixins: [RedisMixin],
   async fetch({ store }) {
     try {
-      await store.dispatch('queue/GET')
+      await store.dispatch('queue/init')
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
     }
   },
-  computed: {}
+  computed: mapState({
+    queues: state => state.queue.queues
+  })
 }
 </script>
 

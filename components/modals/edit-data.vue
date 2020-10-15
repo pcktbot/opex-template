@@ -9,12 +9,15 @@
     <b-container fluid>
       <b-row>
         <b-col>
-          {{ json }}
-          <!-- need to replace with v-jsoneditor -->
+          <b-form-textarea
+            v-model="json"
+            rows="12"
+          />
           <b-button
             variant="secondary"
             block
             class="text-center"
+            @click="onUpdate"
           >
             Save
           </b-button>
@@ -39,17 +42,22 @@ export default {
     json: {
       get() {
         return this.activeIndex !== null
-          ? this.jobs[this.activeIndex].data
-          : null
+          ? JSON.stringify(this.jobs[this.activeIndex].data)
+          : ''
       },
       set(val) {
-        // needs to be written
+        this.$store.dispatch('queue/setByIndex', {
+          i: this.activeIndex,
+          data: val
+        })
       }
     }
   },
   methods: {
+    onUpdate(evt) {
+      this.$emit('on-update', evt)
+    },
     hide() {
-      console.log('hi')
       this.$bvModal.hide('edit-data')
     }
   }

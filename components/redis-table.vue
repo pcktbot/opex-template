@@ -1,113 +1,119 @@
 <template>
-  <b-card
-    header-class="d-flex align-items-center justify-content-between"
-  >
+  <b-card>
     <template v-slot:header>
-      <b-col cols="2">
-        <b-form-group
-          label="Filter"
-          label-size="sm"
-          label-for="filterInput"
-          class="mb-0"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              id="filterInput"
-              :value="queueData.filter"
-              @input="setQueueData({'filter': $event})"
-              type="search"
-              placeholder="Type to Search"
+      <b-container fluid>
+        <b-row>
+          <b-col cols="3">
+            <b-input-group size="sm">
+              <b-input-group-prepend class="d-flex align-items-center px-3">
+                <b-icon-search variant="secondary" />
+              </b-input-group-prepend>
+              <b-form-input
+                id="filterInput"
+                :value="queueData.filter"
+                type="search"
+                placeholder="Type to Search"
+                @input="setQueueData({ filter: $event })"
+              />
+              <b-input-group-append>
+                <b-button
+                  :disabled="!queueData.filter"
+                  @click="setQueueData({ filter: '' })"
+                >
+                  Clear
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-col>
+          <b-col cols="2">
+            <b-form-group
+              label="Per Page"
+              label-cols="4"
+              label-size="sm"
+              label-for="perPageSelect"
+              class="mb-0"
+            >
+              <b-form-select
+                id="perPageSelect"
+                :value="queueData.perPage"
+                :options="queueData.pageOptions"
+                size="sm"
+                @change="setQueueData({ perPage: $event })"
+              />
+            </b-form-group>
+          </b-col>
+          <b-col cols="3">
+            <b-pagination
+              id="pagination"
+              :value="queueData.currentPage"
+              :total-rows="queueData.totalRows"
+              :per-page="queueData.perPage"
+              pills
+              class="my-0"
+              @change="setQueueData({ currentPage: $event })"
             />
-            <b-input-group-append>
-              <b-button :disabled="!queueData.filter" @click="setQueueData({'filter': ''})">
-                Clear
+          </b-col>
+          <b-col cols="4" class="text-right">
+            <b-btn-group size="sm">
+              <b-button @click="selectAllRows">
+                Select All
               </b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-      <b-col cols="2">
-        <b-form-group
-          label="Per page"
-          label-size="sm"
-          label-for="perPageSelect"
-          class="mb-0"
-        >
-          <b-form-select
-            id="perPageSelect"
-            :value="queueData.perPage"
-            @change="setQueueData({'perPage': $event})"
-            size="sm"
-            :options="queueData.pageOptions"
-          />
-        </b-form-group>
-      </b-col>
-      <b-col cols="4">
-        <b-form-group
-          label="Pick a page"
-          label-size="sm"
-          label-for="pagination"
-          class="mb-0"
-        >
-          <b-pagination
-            id="pagination"
-            :value="queueData.currentPage"
-            @change="setQueueData({'currentPage': $event})"
-            :total-rows="queueData.totalRows"
-            :per-page="queueData.perPage"
-            align="fill"
-            size="sm"
-            class="my-0"
-          />
-        </b-form-group>
-      </b-col>
-      <b-col cols="4" class="mt-4 pt-3 text-right">
-        <b-button class="mb-1" size="sm" @click="selectAllRows">Select All</b-button>
-        <b-button class="mb-1" size="sm" @click="clearSelected">Clear Selected</b-button>
-        <span :id="!failedSelected ? 'failed-state' : 'retry-btn'">
-          <b-button
-            size="sm"
-            :disabled="!failedSelected"
-            @click="retryFailed(queueData.queueName, queueData.selected)"
-            class="mb-1"
-          >
-            Retry Selected Failed Jobs
-          </b-button>
-          <b-tooltip
-            target="failed-state"
-            triggers="hover"
-            placement="top"
-            variant="danger"
-          >
-            Select failed job/s<br>Or<br>Unselect jobs that are not failed
-          </b-tooltip>
-        </span>
-      </b-col>
+              <b-button @click="clearSelected">
+                Clear Selected
+              </b-button>
+            </b-btn-group>
+            <span :id="!failedSelected ? 'failed-state' : 'retry-btn'">
+              <b-button
+                :disabled="!failedSelected"
+                size="sm"
+                @click="retryFailed(queueData.queueName, queueData.selected)"
+              >
+                Retry Selected Failed Jobs
+              </b-button>
+              <b-popover
+                target="failed-state"
+                triggers="hover"
+                placement="top"
+              >
+                Select failed jobs
+                <br>
+                <span class="font-weight-bold">
+                  Or
+                </span>
+                <br>
+                Unselect jobs that are not failed.
+              </b-popover>
+            </span>
+          </b-col>
+        </b-row>
+      </b-container>
     </template>
+    <!-- MODAL COMPONENT START -->
     <edit-data />
+    <!-- MODAL COMPONENT END -->
     <b-table
-      ref="queueTbl"
       id="queueTbl"
+      ref="queueTbl"
       :items="jobs"
       :fields="queueData.fields"
       :filter="queueData.filter"
       :per-page="queueData.perPage"
       :current-page="queueData.currentPage"
       :select-mode="queueData.selectMode"
+      striped
       selectable
       responsive
+      head-variant="light"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
-      head-variant="light"
     >
       <template v-slot:cell(selected)="{ rowSelected }">
-        <icons-swap
-          :needsCheckIcon="rowSelected"
-          :iconConfig="queueData.iconConfig"
-        />
+        <icons-swap v-bind="{ needsCheckIcon: rowSelected, iconConfig: queueData.iconConfig }" />
       </template>
       <template v-slot:cell(_progress)="data">
-        {{ `${data.value} %` }}
+        <b-progress :max="100" variant="primary">
+          <b-progress-bar :value="data.value" :label="`${data.value}%`" />
+        </b-progress>
       </template>
       <template v-slot:cell(processedOn)="data">
         {{ processTime(data.value) }}
@@ -117,15 +123,20 @@
       </template>
       <template v-slot:cell(actions)="row">
         <b-btn-group class="w-100 d-flex">
-          <b-button variant="outline-secondary" size="sm" @click="toggleDetails(row.index)" class="mr-2">
-            {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+          <b-button
+            variant="outline-secondary"
+            size="sm"
+            class="mr-2"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
           </b-button>
           <b-button
             v-b-modal.edit-data
             variant="outline-secondary"
             size="sm"
             class="mr-2"
-            @click="setQueueData({'activeIndex': row.index})"
+            @click="setQueueData({ 'activeIndex': row.index })"
           >
             Edit Data
           </b-button>
@@ -134,22 +145,52 @@
       <template v-slot:row-details="row">
         <b-card>
           <b-row class="mb-2">
-            <b-col cols="1"><b>Data:</b></b-col>
-            <b-col cols="11" class="text-sm-left">{{ row.item.data }}</b-col>
+            <b-col cols="1">
+              <b>
+                Data:
+              </b>
+            </b-col>
+            <b-col cols="11" class="text-sm-left">
+              {{ row.item.data }}
+            </b-col>
           </b-row>
           <b-row class="mb-2">
-            <b-col cols="1"><b>Stacktrace:</b></b-col>
-            <b-col cols="11" class="text-sm-left">{{ row.item.stacktrace }}</b-col>
+            <b-col cols="1">
+              <b>
+                Stacktrace:
+              </b>
+            </b-col>
+            <b-col cols="11" class="text-sm-left">
+              {{ row.item.stacktrace }}
+            </b-col>
           </b-row>
           <b-row class="mb-2">
-            <b-col cols="1"><b>Opts:</b></b-col>
-            <b-col cols="11" class="text-sm-left">{{ row.item.opts }}</b-col>
+            <b-col cols="1">
+              <b>
+                Opts:
+              </b>
+            </b-col>
+            <b-col cols="11" class="text-sm-left">
+              {{ row.item.opts }}
+            </b-col>
           </b-row>
           <b-row class="mb-2">
-            <b-col cols="1"><b>Delay:</b></b-col>
-            <b-col cols="5" class="text-sm-left">{{ row.item.delay }}</b-col>
-            <b-col cols="1"><b>Return Val:</b></b-col>
-            <b-col cols="5" class="text-sm-left">{{ row.item.returnvalue }}</b-col>
+            <b-col cols="1">
+              <b>
+                Delay:
+              </b>
+            </b-col>
+            <b-col cols="5" class="text-sm-left">
+              {{ row.item.delay }}
+            </b-col>
+            <b-col cols="1">
+              <b>
+                Return Val:
+              </b>
+            </b-col>
+            <b-col cols="5" class="text-sm-left">
+              {{ row.item.returnvalue }}
+            </b-col>
           </b-row>
         </b-card>
       </template>
@@ -158,30 +199,23 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import RedisMixin from '~/mixins/redis'
 import IconsSwap from '~/components/icons-swap'
 import EditData from '~/components/modals/edit-data'
 export default {
-  mixins: [RedisMixin],
   components: {
     EditData,
     IconsSwap
   },
-  props: {},
-  data () {
-    return {}
-  },
-  created() {
-    this.setQueueData({ totalRows: this.jobs.length })
-  },
+  mixins: [RedisMixin],
   computed: {
     ...mapState({
       queueData: state => state.queue
     }),
     totalRows: {
       get() { return this.$store.state.queue.totalRows },
-      set(val) { this.$store.commit('queue/SET', { totalRows: val }) }
+      set(val) { this.$store.dispatch('queue/set', { totalRows: val }) }
     },
     failedSelected() {
       return this.queueData.selected.length > 0
@@ -189,10 +223,18 @@ export default {
         : false
     }
   },
+  watch: {
+    jobs(val) {
+      this.totalRows = val.length
+    }
+  },
+  created() {
+    this.setQueueData({ totalRows: this.jobs.length })
+  },
   methods: {
-    ...mapMutations({
-      setQueueData: 'queue/SET',
-      toggleDetails: 'queue/ToggleShowDetails'
+    ...mapActions({
+      setQueueData: 'queue/set',
+      toggleDetails: 'queue/toggleShowDetails'
     }),
     processTime(val) {
       return new Date(val).toLocaleString()
@@ -210,17 +252,14 @@ export default {
     clearSelected() {
       this.$refs.queueTbl.clearSelected()
     }
-  },
-  watch: {
-    jobs(val) {
-      this.totalRows = val.length
-    }
   }
 }
 </script>
 
-<style lang="scss" >
-  #queueTbl .table-active, .table.b-table > tbody > .table-active > th, .table.b-table > tbody > .table-active > td {
-    background-color: white;
-  }
+<style lang="scss">
+#queueTbl .table-active,
+.table.b-table > tbody > .table-active > th,
+.table.b-table > tbody > .table-active > td {
+  background-color: white;
+}
 </style>

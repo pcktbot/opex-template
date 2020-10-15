@@ -7,7 +7,17 @@ export const state = () => ({
   pageOptions: [5, 10, 20, 50, 100],
   currentPage: 1,
   totalRows: 1,
-  fields: ['selected', 'id', 'state', 'name', 'attemptsMade', '_progress', 'processedOn', 'finishedOn', 'actions'],
+  fields: [
+    'selected',
+    { key: 'id', sortable: true },
+    { key: 'state', sortable: true },
+    { key: 'name', sortable: true },
+    { key: 'attemptsMade', sortable: true },
+    '_progress',
+    { key: 'processedOn', sortable: true },
+    { key: 'finishedOn', sortable: true },
+    'actions'
+  ],
   selectMode: 'multi',
   selected: [],
   iconConfig: {
@@ -21,7 +31,7 @@ export const state = () => ({
 })
 
 export const actions = {
-  async GET({ commit }) {
+  async init({ commit }) {
     const allQueues = {}
     const res = await this.$axios.$get('api/v1/redis')
     for (let i = 0; i < res.length; i++) {
@@ -32,16 +42,26 @@ export const actions = {
       }
     }
     commit('SET', { queues: allQueues })
+  },
+  set({ commit }, payload) {
+    commit('SET', payload)
+  },
+  setByIndex({ commit }, payload) {
+    this.$emit('set-by-index', payload)
+  },
+  toggleShowDetails({ commit }, index) {
+    commit('TOGGLE', index)
   }
 }
 
 export const mutations = {
   SET(state, obj) {
     const keys = Object.keys(obj)
-    // eslint-disable-next-line no-return-assign
-    keys.forEach(key => state[key] = obj[key])
+    keys.forEach((key) => {
+      state[key] = obj[key]
+    })
   },
-  ToggleShowDetails (state, index) {
+  TOGGLE(state, index) {
     const item = state.jobs[index]
     item._showDetails = !item._showDetails
   }
