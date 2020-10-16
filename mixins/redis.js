@@ -1,9 +1,4 @@
 export default {
-  // computed: mapState({
-  //   jobs: state => state.queue.jobs,
-  //   job: state => state.queue.job,
-  //   queues: state => state.queue.queue
-  // }),
   computed: {
     jobs: {
       get() { return this.$store.state.queue.jobs },
@@ -19,6 +14,10 @@ export default {
     queues: {
       get() { return this.$store.state.queue.queues },
       set(val) { this.$store.dispatch('queue/set', { queues: val }) }
+    },
+    allQueuesPaused: {
+      get() { return this.$store.state.queue.allQueuesPaused },
+      set(val) { this.$store.dispatch('queue/set', { allQueuesPaused: val }) }
     }
   },
   methods: {
@@ -46,6 +45,7 @@ export default {
       this.$axios.$put(`api/v1/redis/${queueName}`, { paused: this.queues[queueName].isPaused })
     },
     pauseAllQueues() {
+      this.allQueuesPaused = !this.allQueuesPaused
       for (const key in this.queues) {
         this.pauseQueue(this.queues[key].name)
       }

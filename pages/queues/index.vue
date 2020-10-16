@@ -6,11 +6,11 @@
           style="align-items: center;"
           @click="pauseAllQueues()"
         >
-          {{ allQueuesPaused ? 'Unpause all Queues' : 'Pause all Queues' }}
+          {{ allQueuesPaused ? 'Resume all Queues' : 'Pause all Queues' }}
         </b-btn>
       </template>
     </top-nav>
-    <div class="main-with-nav">
+    <div class="main">
       <b-container fluid class="px-3 scroll-container">
         <b-row class="my-3">
           <b-col
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import TopNav from '~/components/top-nav'
 import RedisMixin from '~/mixins/redis'
 import RedisTable from '~/components/redis-table'
@@ -88,16 +87,12 @@ export default {
       // eslint-disable-next-line no-console
       console.log(e)
     }
-  },
-  computed: mapState({
-    queues: state => state.queue.queues,
-    allQueuesPaused: state => state.queue.allQueuesPaused
-  })
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-  .main-with-nav {
+  .main {
     position: fixed;
     top:5rem;
     left: 0;
