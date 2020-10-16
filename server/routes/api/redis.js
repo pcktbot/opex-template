@@ -1,7 +1,15 @@
 const queues = require('../../controllers/queue')
 const redis = require('../../controllers/redis')
 module.exports = (app) => {
-  //Retry all jobs in queue
+  // Update data in Job
+  app.put('/api/v1/redis/:queueName/update', async (req, res) => {
+    const { queueName } = req.params
+    const { id, data } = req.body
+    await redis.updateJobData(queueName, id, data)
+    res.sendStatus(200)
+  })
+
+  // Retry all jobs in queue
   app.put('/api/v1/redis/:queueName/retry', async (req, res) => {
     const { queueName } = req.params
     const { ids } = req.body
@@ -28,8 +36,9 @@ module.exports = (app) => {
 
   // Begin Standard names
   // Get all queue names
-  app.get('/api/v1/redis', (req, res) => {
-    res.json(redis.getQueueNames())
+  app.get('/api/v1/redis', async (req, res) => {
+    const val = await redis.getQueueNameAndState()
+    res.json(val)
   })
 
   // Get status job counts

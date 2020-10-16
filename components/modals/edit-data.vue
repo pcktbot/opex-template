@@ -17,7 +17,7 @@
             variant="secondary"
             block
             class="text-center"
-            @click="onUpdate"
+            @click="onSave"
           >
             Save
           </b-button>
@@ -29,15 +29,17 @@
 
 <script>
 import { mapState } from 'vuex'
+import RedisMixin from '~/mixins/redis'
 export default {
+  mixins: [RedisMixin],
   props: {},
   data () {
     return {}
   },
   computed: {
     ...mapState({
-      activeIndex: state => state.queue.activeIndex,
-      jobs: state => state.queue.jobs
+      queueName: state => state.queue.queueName,
+      activeIndex: state => state.queue.activeIndex
     }),
     json: {
       get() {
@@ -48,14 +50,19 @@ export default {
       set(val) {
         this.$store.dispatch('queue/setByIndex', {
           i: this.activeIndex,
-          data: val
+          data: JSON.parse(val)
         })
       }
     }
   },
   methods: {
-    onUpdate(evt) {
-      this.$emit('on-update', evt)
+    onSave() {
+      this.updateJobData(
+        this.queueName,
+        this.jobs[this.activeIndex].id,
+        this.jobs[this.activeIndex].data
+      )
+      this.hide()
     },
     hide() {
       this.$bvModal.hide('edit-data')

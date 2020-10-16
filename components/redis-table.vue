@@ -111,7 +111,7 @@
         <icons-swap v-bind="{ needsCheckIcon: rowSelected, iconConfig: queueData.iconConfig }" />
       </template>
       <template v-slot:cell(_progress)="data">
-        <b-progress :max="100" variant="primary">
+        <b-progress class="mt-1" :max="100" variant="primary">
           <b-progress-bar :value="data.value" :label="`${data.value}%`" />
         </b-progress>
       </template>
@@ -127,7 +127,7 @@
             variant="outline-secondary"
             size="sm"
             class="mr-2"
-            @click="row.toggleDetails"
+            @click="toggleDetails(getIndexById(row.item.id))"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
           </b-button>
@@ -136,7 +136,7 @@
             variant="outline-secondary"
             size="sm"
             class="mr-2"
-            @click="setQueueData({ 'activeIndex': row.index })"
+            @click="setQueueData({ 'activeIndex': getIndexById(row.item.id) })"
           >
             Edit Data
           </b-button>
@@ -236,6 +236,9 @@ export default {
       setQueueData: 'queue/set',
       toggleDetails: 'queue/toggleShowDetails'
     }),
+    getIndexById(id) {
+      return this.jobs.findIndex(job => job.id === id)
+    },
     processTime(val) {
       return new Date(val).toLocaleString()
     },

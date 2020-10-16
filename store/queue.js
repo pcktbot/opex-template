@@ -37,19 +37,24 @@ export const actions = {
     for (let i = 0; i < res.length; i++) {
       allQueues[res[i].name] = {
         name: res[i].name,
-        isPaused: false,
+        isPaused: res[i].isPaused,
         statuses: await this.$axios.$get(`api/v1/redis/${res[i].name}`)
       }
     }
     commit('SET', { queues: allQueues })
+    const allQueuesPaused = res.every(queue => queue.isPaused)
+    commit('SET', { allQueuesPaused })
   },
   set({ commit }, payload) {
     commit('SET', payload)
   },
   setByIndex({ commit }, payload) {
-    this.$emit('set-by-index', payload)
+    commit('SET_BY_INDEX', payload)
   },
-  toggleShowDetails({ commit }, index) {
+  setQueueProp({ commit }, payload) {
+    commit('SET_QUEUE_PROP', payload)
+  },
+  toggleShowDetails({ commit, state }, index) {
     commit('TOGGLE', index)
   }
 }
@@ -60,6 +65,12 @@ export const mutations = {
     keys.forEach((key) => {
       state[key] = obj[key]
     })
+  },
+  SET_QUEUE_PROP(state, { queueName, propName, val }) {
+    state.queues[queueName][propName] = val
+  },
+  SET_BY_INDEX(state, { i, data }) {
+    state.jobs[i].data = data
   },
   TOGGLE(state, index) {
     const item = state.jobs[index]

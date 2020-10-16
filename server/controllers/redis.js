@@ -7,7 +7,28 @@ module.exports = {
   getJobsById,
   retryJobs,
   getAllJobsInQueue,
-  jobClassToObject
+  jobClassToObject,
+  updateJobData,
+  getQueueState,
+  getQueueNameAndState
+}
+
+function getQueueState(queueName) {
+  return queues[queueName].isPaused()
+}
+
+async function getQueueNameAndState() {
+  const queueNames = getQueueNames()
+  for (let i = 0; i < queueNames.length; i++) {
+    const { name } = queueNames[i]
+    queueNames[i].isPaused = await getQueueState(name)
+  }
+  return queueNames
+}
+
+async function updateJobData(queueName, id, data) {
+  const job = await getJobById(queueName, id)
+  job.update(data)
 }
 
 async function getJobsById(queueName, ids) {
