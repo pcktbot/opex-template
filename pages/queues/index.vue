@@ -69,16 +69,22 @@
           </b-col>
         </b-row>
       </b-container>
+      <Footer />
     </div>
   </div>
 </template>
 
 <script>
+import Footer from '~/components/footer'
 import TopNav from '~/components/top-nav'
 import RedisMixin from '~/mixins/redis'
 import RedisTable from '~/components/redis-table'
 export default {
-  components: { RedisTable, TopNav },
+  components: {
+    RedisTable,
+    TopNav,
+    Footer
+  },
   mixins: [RedisMixin],
   async fetch({ store }) {
     try {
